@@ -8,6 +8,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 
 public class ProfileUtils {
@@ -21,6 +27,7 @@ public class ProfileUtils {
     private static Document doc;
     private static Document prof;
     private static String OS = (System.getProperty("os.name")).toUpperCase();
+    private static Transformer transformer;
 
     public void setup(){
         if (OS.contains("WIN")) {
@@ -52,10 +59,16 @@ public class ProfileUtils {
                 OutputStream out = new FileOutputStream(profileFile);
                 out.write(buffer);
                 out.close();
-                prof = docBuilder.parse(profileFile);
-            } catch (IOException | SAXException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            prof = docBuilder.parse(profileFile);
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (!settingsFile.exists()){
             try {
@@ -66,10 +79,31 @@ public class ProfileUtils {
                 OutputStream out = new FileOutputStream(settingsFile);
                 out.write(buffer);
                 out.close();
-                doc = docBuilder.parse(settingsFile);
-            } catch (IOException | SAXException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        try {
+            doc = docBuilder.parse(settingsFile);
+        } catch (SAXException e) {
+            try {
+                settingsFile.delete();
+                InputStream in = getClass().getResourceAsStream("/shanasettings.xml");
+                byte[] buffer = new byte[in.available()];
+                in.read(buffer);
+                OutputStream out = new FileOutputStream(settingsFile);
+                out.write(buffer);
+                out.close();
+                doc = docBuilder.parse(settingsFile);
+            }catch (Exception ignored){}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        try {
+            transformer = transformerFactory.newTransformer();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
         }
     }
 
@@ -82,10 +116,10 @@ public class ProfileUtils {
             case "auth"://// TODO: Complete authentication setting writer
                 obj = (JSONObject) o;
                 JSONObject selprof = (JSONObject) obj.get("selectedProfile");
-                Node accounts = doc.getElementById("accounts");
-                NodeList nl = accounts.getChildNodes();
-
+                Node accounts = null;
                 boolean exists = false;
+                accounts = doc.getElementsByTagName("accounts").item(0);
+                NodeList nl = accounts.getChildNodes();
                 for (int temp = 0; temp < nl.getLength(); temp++){
                     Node nNode = nl.item(temp);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE){
@@ -97,8 +131,9 @@ public class ProfileUtils {
                     Element account = doc.createElement("account");
                     Attr clid = doc.createAttribute("clientToken");
                     clid.setValue((String) obj.get("clientToken"));
+                    account.setAttributeNode(clid);
                     Element uuid = doc.createElement("uuid");
-                    Text uuidt = doc.createTextNode((String) selprof.get("uuid"));
+                    Text uuidt = doc.createTextNode((String) selprof.get("id"));
                     uuid.appendChild(uuidt);
                     Element name = doc.createElement("name");
                     Text namet = doc.createTextNode((String) selprof.get("name"));
@@ -118,6 +153,7 @@ public class ProfileUtils {
                 }
                 curacc = doc.createTextNode((String) obj.get("clientToken"));
                 selacc.appendChild(curacc);
+                saveDoc();
                 break;
             case "setAcc":
                 obj = (JSONObject) o;
@@ -128,11 +164,30 @@ public class ProfileUtils {
                 }
                 curacc = doc.createTextNode((String) obj.get("clientToken"));
                 selacc.appendChild(curacc);
+                saveDoc();
                 break;
             case "newProf":
                 throw new NotImplementedException();
             default:
                 throw new IllegalArgumentException("Not a valid argument lol");
+        }
+    }
+    private static void saveDoc(){
+        try {
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(settingsFile);
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+    }
+    private static void saveProfile(){
+        try {
+            DOMSource source = new DOMSource(prof);
+            StreamResult result = new StreamResult(profileFile);
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -32,7 +32,6 @@ public class LoginUtils {
 
     // Returns true if successful
     public boolean authenticate() throws Exception{
-        System.out.println(email + " " + password);
         if (email == null || password == null) throw new InvalidCredentialsException();
         HttpPost post = new HttpPost("https://authserver.mojang.com/authenticate");
         String json = "{\"agent\": {" +

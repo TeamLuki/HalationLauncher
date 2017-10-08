@@ -13,7 +13,8 @@ public class LoginDialog extends JFrame {
     public JTextField emailField;
     public JPasswordField passwordField;
     private JLabel errorField;
-    private JButton launcherButton;
+    private JComboBox loggedInComboBox;
+    private JLabel loggedinlabel;
     private LoginUtils loginutils;
     public boolean closing;
     /* Maybe add more later, currently using boolean
@@ -25,6 +26,8 @@ public class LoginDialog extends JFrame {
         setTitle("Login to ProxyLauncher");
         setContentPane(contentPane);
         getRootPane().setDefaultButton(buttonOK);
+        loggedInComboBox.setVisible(false);
+        loggedinlabel.setVisible(false);
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -51,14 +54,6 @@ public class LoginDialog extends JFrame {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        launcherButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LauncherGUI lg = new LauncherGUI();
-                lg.pack();
-                lg.setVisible(true);
-            }
-        });
     }
 
     public LoginUtils getLoginutils() {
@@ -88,16 +83,5 @@ public class LoginDialog extends JFrame {
         System.out.println("Canceled the login, shutting down");
         closing = true;
         dispose();
-    }
-
-    public static void main(String[] args) {
-        LoginDialog dialog = new LoginDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
-    }
-
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
     }
 }

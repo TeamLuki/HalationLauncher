@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launcher>
     <proxylocations>
         <location>
@@ -7,7 +7,5 @@
         </location>
     </proxylocations>
     <selectedAccount/>
-    <accounts>
-
-    </accounts>
+    <accounts/>
 </launcher>
