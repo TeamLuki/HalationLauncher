@@ -2,10 +2,12 @@
 <launcher>
     <proxylocations>
         <location>
-            <host>gcad</host>
+            <host>localhost</host>
             <port>24811</port>
         </location>
     </proxylocations>
     <selectedAccount/>
-    <accounts></accounts>
+    <accounts>
+
+    </accounts>
 </launcher>

@@ -84,6 +84,7 @@ public class ProfileUtils {
                 JSONObject selprof = (JSONObject) obj.get("selectedProfile");
                 Node accounts = doc.getElementById("accounts");
                 NodeList nl = accounts.getChildNodes();
+
                 boolean exists = false;
                 for (int temp = 0; temp < nl.getLength(); temp++){
                     Node nNode = nl.item(temp);

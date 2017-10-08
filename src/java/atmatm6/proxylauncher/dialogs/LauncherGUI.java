@@ -3,6 +3,7 @@ package atmatm6.proxylauncher.dialogs;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import javax.swing.*;
@@ -16,6 +17,8 @@ public class LauncherGUI extends JFrame {
     private JTabbedPane tabs;
     private JComboBox profileChooser;
     private JPanel newsPanel;
+    private JTextField labelTextField;
+    private JButton signOutButton;
 
     public LauncherGUI() {
         setContentPane(contentPane);
@@ -23,7 +26,9 @@ public class LauncherGUI extends JFrame {
         JFXPanel jpane = new JFXPanel();
         Platform.runLater(() -> {
             WebView wv = new WebView();
-            wv.getEngine().load("http://texttale.square7.ch/proxynews.html");
+            WebEngine we = wv.getEngine();
+            we.load("http://texttale.square7.ch/proxynews.html");
+            we.setJavaScriptEnabled(false);
             jpane.setScene(new Scene(wv));
         });
         newsPanel.add(jpane, BorderLayout.CENTER);

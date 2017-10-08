@@ -45,7 +45,6 @@ public class LoginUtils {
         post.setEntity(entity);
         post.setHeader("Accept", "application/json");
         post.setHeader("Content-type", "application/json");
-
         CloseableHttpResponse resp = client.execute(post);
         String body = EntityUtils.toString(resp.getEntity());
         System.out.println(body);

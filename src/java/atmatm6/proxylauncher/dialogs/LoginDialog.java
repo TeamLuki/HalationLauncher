@@ -15,6 +15,11 @@ public class LoginDialog extends JFrame {
     private JLabel errorField;
     private JButton launcherButton;
     private LoginUtils loginutils;
+    public boolean closing;
+    /* Maybe add more later, currently using boolean
+    * true - Exit
+    * false - Launching
+    */
 
     public LoginDialog() {
         setTitle("Login to ProxyLauncher");
@@ -68,7 +73,10 @@ public class LoginDialog extends JFrame {
         String s = new String(passwordField.getPassword());
         loginutils.setLoginDetails(emailField.getText(),s);
         try {
-            loginutils.authenticate();
+            if (loginutils.authenticate()){
+                closing = false;
+                dispose();
+            }
         } catch (InvalidCredentialsException e) {
             errorField.setText("Sorry, invalid connection credentials, please try again.");
         } catch (Exception e) {
@@ -78,6 +86,7 @@ public class LoginDialog extends JFrame {
 
     private void onCancel() {
         System.out.println("Canceled the login, shutting down");
+        closing = true;
         dispose();
     }
 
