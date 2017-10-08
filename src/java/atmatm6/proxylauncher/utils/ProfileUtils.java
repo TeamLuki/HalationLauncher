@@ -1,5 +1,7 @@
 package atmatm6.proxylauncher.utils;
 
+import com.sun.org.apache.xerces.internal.dom.DOMOutputImpl;
+import com.sun.org.apache.xml.internal.serialize.DOMSerializerImpl;
 import org.json.simple.JSONObject;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -25,6 +27,7 @@ public class ProfileUtils {
     private static File profileFile;
     private static File settingsFile;
     private static Document doc;
+    private static DocumentBuilder docBuilder = null;
     private static Document prof;
     private static String OS = (System.getProperty("os.name")).toUpperCase();
     private static Transformer transformer;
@@ -44,7 +47,6 @@ public class ProfileUtils {
         settingsFile = new File(settingsURL);
         workingdir.mkdirs();
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = null;
         try {
             docBuilder = docFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
@@ -65,9 +67,7 @@ public class ProfileUtils {
         }
         try {
             prof = docBuilder.parse(profileFile);
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             e.printStackTrace();
         }
         if (!settingsFile.exists()){
@@ -116,32 +116,32 @@ public class ProfileUtils {
             case "auth"://// TODO: Complete authentication setting writer
                 obj = (JSONObject) o;
                 JSONObject selprof = (JSONObject) obj.get("selectedProfile");
-                Node accounts = null;
                 boolean exists = false;
-                accounts = doc.getElementsByTagName("accounts").item(0);
+                Node accounts = doc.getElementsByTagName("accounts").item(0);
                 NodeList nl = accounts.getChildNodes();
                 for (int temp = 0; temp < nl.getLength(); temp++){
                     Node nNode = nl.item(temp);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE){
                         Element nElement = (Element) nNode;
-                        if (nElement.getAttribute("clientToken") == obj.get("clientToken")) {exists = true; break;}
+                        System.out.println(nElement.getAttributeNode("uuid").getValue().equals(selprof.get("id")));
+                        if (nElement.getAttributeNode("uuid").getValue().equals(selprof.get("id"))) {exists = true; break;}
                     }
                 }
                 if (!exists) {
                     Element account = doc.createElement("account");
-                    Attr clid = doc.createAttribute("clientToken");
-                    clid.setValue((String) obj.get("clientToken"));
+                    Attr clid = doc.createAttribute("uuid");
+                    clid.setValue((String) selprof.get("id"));
                     account.setAttributeNode(clid);
-                    Element uuid = doc.createElement("uuid");
-                    Text uuidt = doc.createTextNode((String) selprof.get("id"));
-                    uuid.appendChild(uuidt);
+                    Element clto = doc.createElement("clto");
+                    Text cltot = doc.createTextNode((String) obj.get("clientToken"));
+                    clto.appendChild(cltot);
                     Element name = doc.createElement("name");
                     Text namet = doc.createTextNode((String) selprof.get("name"));
                     name.appendChild(namet);
                     Element acto = doc.createElement("acto");
                     Text actor = doc.createTextNode((String) obj.get("accessToken"));
                     acto.appendChild(actor);
-                    account.appendChild(uuid);
+                    account.appendChild(clto);
                     account.appendChild(name);
                     account.appendChild(acto);
                     accounts.appendChild(account);
@@ -168,16 +168,22 @@ public class ProfileUtils {
                 break;
             case "newProf":
                 throw new NotImplementedException();
+            case "editProf":
+                throw new NotImplementedException();
             default:
                 throw new IllegalArgumentException("Not a valid argument lol");
         }
     }
     private static void saveDoc(){
         try {
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(settingsFile);
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
+            DOMSerializerImpl dsi = new DOMSerializerImpl();
+            dsi.setNewLine("\n");
+            dsi.getDomConfig().setParameter("format-pretty-print",true);
+            DOMOutputImpl doi = new DOMOutputImpl();
+            doi.setCharacterStream(new FileWriter(settingsFile));
+            dsi.write(doc, doi);
+            doi.getCharacterStream().close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -189,5 +195,36 @@ public class ProfileUtils {
         } catch (TransformerException e) {
             e.printStackTrace();
         }
+    }
+    public static String[] read(String s){
+        try {
+            doc = docBuilder.parse(settingsFile);
+
+            prof = docBuilder.parse(profileFile);
+        } catch (SAXException | IOException e) {
+            e.printStackTrace();
+        }
+        switch (s){
+            case "accessToken":
+                try {
+                    //ToDO: look for accessToken not use doc
+                    StreamResult result = new StreamResult(new StringWriter());
+                    transformer.transform(new DOMSource(), result);
+                    return new String[]{result.getWriter().toString()};
+                } catch (TransformerException ignored){}
+                break;
+            case "hostPort":
+                try {
+                    //ToDO: look for host and port not use doc
+                    DOMSource source = new DOMSource(doc);
+                    StreamResult result = new StreamResult(new StringWriter());
+                    transformer.transform(source, result);
+                    return new String[]{result.getWriter().toString()};
+                } catch (TransformerException ignored){}
+                break;
+            case "profiles":
+                break;
+        }
+        throw new NotImplementedException();
     }
 }

@@ -9,7 +9,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LauncherGUI extends JFrame {
     private JPanel contentPane;
@@ -19,6 +21,7 @@ public class LauncherGUI extends JFrame {
     private JComboBox profileChooser;
     private JPanel newsPanel;
     private JButton signOutButton;
+    private JSpinner spinner1;
 
     public LauncherGUI() {
         setContentPane(contentPane);

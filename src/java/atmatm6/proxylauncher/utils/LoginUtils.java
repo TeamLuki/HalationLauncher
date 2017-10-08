@@ -9,7 +9,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.xml.sax.SAXException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 
 public class LoginUtils {
     private CloseableHttpClient client;
@@ -31,7 +36,7 @@ public class LoginUtils {
     }
 
     // Returns true if successful
-    public boolean authenticate() throws Exception{
+    public boolean authenticate() throws InvalidCredentialsException, IOException, ParseException, ParserConfigurationException, SAXException {
         if (email == null || password == null) throw new InvalidCredentialsException();
         HttpPost post = new HttpPost("https://authserver.mojang.com/authenticate");
         String json = "{\"agent\": {" +
@@ -46,20 +51,19 @@ public class LoginUtils {
         post.setHeader("Content-type", "application/json");
         CloseableHttpResponse resp = client.execute(post);
         String body = EntityUtils.toString(resp.getEntity());
-        System.out.println(body);
         if (resp.getStatusLine().getStatusCode() == 200){
-            System.out.println("JSON for authentication");
             ProfileUtils.write("auth",parser.parse(body));
             return true;
         } else {
-            throw new Exception("An issue occcured, please don't come again.");
+            throw new InvalidCredentialsException("An issue occcured, please don't come again.");
         }
     }
 
-    public boolean valid() throws Exception{
-        throw new NotImplementedException();
+    public boolean valid() throws NotImplementedException{
+        ProfileUtils.read("");
+        return false;
     }
-    public boolean refresh() throws Exception{
+    public boolean refresh() throws NotImplementedException{
         throw new NotImplementedException();
     }
 }
