@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launcher>
+    <proxylocations>
+        <location>
+            <host>localhost</host>
+            <port>24811</port>
+        </location>
+    </proxylocations>
+    <selectedAccount/>
+    <accounts/>
+</launcher>
