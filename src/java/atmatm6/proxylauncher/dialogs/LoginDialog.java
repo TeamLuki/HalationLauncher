@@ -1,6 +1,6 @@
 package atmatm6.proxylauncher.dialogs;
 
-import atmatm6.proxylauncher.utils.LoginUtils;
+import atmatm6.proxylauncher.launcher.LoginUtils;
 import org.apache.http.auth.InvalidCredentialsException;
 
 import javax.swing.*;
@@ -15,7 +15,6 @@ public class LoginDialog extends JFrame {
     private JLabel errorField;
     private JComboBox loggedInComboBox;
     private JLabel loggedinlabel;
-    private LoginUtils loginutils;
     public boolean closing;
     /* Maybe add more later, currently using boolean
     * true - Exit
@@ -44,19 +43,11 @@ public class LoginDialog extends JFrame {
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    public LoginUtils getLoginutils() {
-        return loginutils;
-    }
-
-    public void setLoginutils(LoginUtils loginutils) {
-        this.loginutils = loginutils;
-    }
-
     private void onOK(){
         String s = new String(passwordField.getPassword());
-        loginutils.setLoginDetails(emailField.getText(),s);
+        LoginUtils.setLoginDetails(emailField.getText(),s);
         try {
-            if (loginutils.authenticate()){
+            if (LoginUtils.authenticate()){
                 closing = false;
                 dispose();
             }

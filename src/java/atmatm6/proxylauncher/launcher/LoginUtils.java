@@ -1,4 +1,4 @@
-package atmatm6.proxylauncher.utils;
+package atmatm6.proxylauncher.launcher;
 
 import com.sun.istack.internal.Nullable;
 import com.sun.javaws.exceptions.InvalidArgumentException;
@@ -18,14 +18,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
 public class LoginUtils {
-    private CloseableHttpClient client;
-    private String email;
-    private String password;
-    private JSONParser parser;
-    private String server = "https://authserver.mojang.com";
+    private static CloseableHttpClient client;
+    private static String email;
+    private static String password;
+    private static JSONParser parser;
+    private static String server = "https://authserver.mojang.com";
 
     // Simple initialization
-    public LoginUtils(){
+    public static void setup(){
         client = HttpClients.createDefault();
         parser = new JSONParser();
     }
@@ -33,15 +33,15 @@ public class LoginUtils {
     // This looks shady af but if you're here then you're the shady one ;)
     // You can null each detail if you've already inputted it and changed it between now and before
     // I probably won't need to do it, but it's there.
-    public void setLoginDetails(@Nullable String email, @Nullable String password){
-        if (email != null) this.email = email;
-        if (password != null) this.password = password;
+    public static void setLoginDetails(@Nullable String email, @Nullable String password){
+        if (email != null) setEmail(email);
+        if (password != null) setPassword(password);
     }
 
     // Returns true if successful
-    public boolean authenticate() throws InvalidCredentialsException, IOException, ParseException, ParserConfigurationException, SAXException, InvalidArgumentException {
+    public static boolean authenticate() throws InvalidCredentialsException, IOException, ParseException, ParserConfigurationException, SAXException, InvalidArgumentException {
         if (email == null || password == null) throw new InvalidCredentialsException();
-        String[] re = ProfileUtils.read("tokens");
+        String[] re = (String[]) ProfileUtils.read("tokens");
         boolean useclto = false;
         if (!re[0].equals("it's cold outside")) useclto = true;
         HttpPost post = new HttpPost(server+"/authenticate");
@@ -67,11 +67,19 @@ public class LoginUtils {
         }
     }
 
+    private static void setEmail(String email) {
+        LoginUtils.email = email;
+    }
+
+    private static void setPassword(String password) {
+        LoginUtils.password = password;
+    }
+
     // returns false if invalid
-    public boolean refresh() throws IOException, ParseException, ParserConfigurationException, SAXException, InvalidArgumentException {
-        String[] re = ProfileUtils.read("tokens");
+    public static boolean refresh() throws IOException, ParseException, ParserConfigurationException, SAXException, InvalidArgumentException {
+        String[] re = (String[]) ProfileUtils.read("tokens");
         if (!validate(re)) return false;
-        HttpPost post = new HttpPost(server + "/");
+        HttpPost post = new HttpPost(server + "/refresh");
         JSONObject obj = new JSONObject();
         obj.put("accessToken",re[0]);
         obj.put("clientToken",re[1]);
@@ -87,7 +95,8 @@ public class LoginUtils {
         return false;
     }
 
-    private boolean validate(String[] re) throws IOException {
+    private static boolean validate(String[] re) throws IOException {
+        if (re[0].equals("it's cold outside")) return false;
         HttpPost post = new HttpPost(server + "/validate");
         JSONObject obj = new JSONObject();
         obj.put("accessToken",re[0]);
@@ -99,5 +108,36 @@ public class LoginUtils {
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 204)return true;
         return false;
+    }
+
+    public static void signOutOrInvalidate() throws Exception {
+        HttpPost post;
+        if (email == null || password == null) {
+            String[] re  = new String[]{"it's cold outside"};
+            try {
+                re = (String[]) ProfileUtils.read("tokens");
+            } catch (InvalidArgumentException ignored){}
+            if (re[0].equals("it's cold outside") )throw new Exception();
+            post = new HttpPost();
+            JSONObject obj = new JSONObject();
+            obj.put("accessToken",re[0]);
+            obj.put("clientToken",re[1]);
+            StringEntity se = new StringEntity(obj.toJSONString());
+            post.setEntity(se);
+            post.setHeader("Content-type", "application/json");
+        } else {
+            post = new HttpPost();
+            JSONObject obj = new JSONObject();
+            obj.put("username",email);
+            obj.put("password",password);
+            StringEntity se = new StringEntity(obj.toJSONString());
+            post.setEntity(se);
+            post.setHeader("Content-type", "application/json");
+        }
+        CloseableHttpResponse resp = client.execute(post);
+        if (resp.getStatusLine().getStatusCode() != 200) throw new Exception();
+        else {
+
+        }
     }
 }

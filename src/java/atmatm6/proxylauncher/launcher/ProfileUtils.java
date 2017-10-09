@@ -1,4 +1,4 @@
-package atmatm6.proxylauncher.utils;
+package atmatm6.proxylauncher.launcher;
 
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import com.sun.org.apache.xerces.internal.dom.DOMOutputImpl;
@@ -13,10 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 
 public class ProfileUtils {
@@ -107,7 +104,6 @@ public class ProfileUtils {
             e.printStackTrace();
         }
     }
-
     static void write(String whatToWrite, Object o) throws IOException, SAXException, ParserConfigurationException {
         Text curacc;
         Element selacc;
@@ -190,14 +186,16 @@ public class ProfileUtils {
     }
     private static void saveProfile(){
         try {
-            DOMSource source = new DOMSource(prof);
-            StreamResult result = new StreamResult(profileFile);
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
+            DOMSerializerImpl dsi = new DOMSerializerImpl();
+            dsi.setNewLine("\n");
+            dsi.getDomConfig().setParameter("format-pretty-print",true);
+            DOMOutputImpl doi = new DOMOutputImpl();
+            doi.setCharacterStream(new FileWriter(profileFile));
+            dsi.write(prof, doi);
+            doi.getCharacterStream().close();
+        } catch (IOException ignored) {}
     }
-    public static String[] read(String whatToRead) throws InvalidArgumentException {
+    public static Object read(String whatToRead) throws InvalidArgumentException {
         try {
             doc = docBuilder.parse(settingsFile);
             prof = docBuilder.parse(profileFile);
@@ -228,23 +226,22 @@ public class ProfileUtils {
                 //bad practice (i think) but it's better than throwing (insert italics here)another(end of italics) exception.
                 else return new String[]{"it's cold outside"};
             case "hostPort":
-                try {
-                    //ToDO: look for host and port not use doc
-                    DOMSource source = new DOMSource(doc);
-                    StreamResult result = new StreamResult(new StringWriter());
-                    transformer.transform(source, result);
-                    return new String[]{result.getWriter().toString()};
-                } catch (TransformerException ignored){}
-                break;
+                Element location = (Element) doc.getElementsByTagName("").item(0);
+                String host = location.getElementsByTagName("host").item(0).getTextContent();
+                String port = location.getElementsByTagName("port").item(0).getTextContent();
+                return new String[]{host,port};
             case "profiles":
                 NodeList profiles = doc.getElementsByTagName("profile");
                 for (int c = 0; c < profiles.getLength(); c += 1){
-
+                    Node nNode =  profiles.item(c);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE){
+                        Element nElement = (Element) nNode;
+                        if (nElement.hasAttribute("selected"));
+                    }
                 }
-                break;
+                return null;
             default:
                 throw new IllegalArgumentException();
         }
-        throw new NotImplementedException();
     }
 }

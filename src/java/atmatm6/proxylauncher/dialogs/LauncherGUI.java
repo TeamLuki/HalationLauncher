@@ -1,5 +1,6 @@
 package atmatm6.proxylauncher.dialogs;
 
+import atmatm6.proxylauncher.launcher.LoginUtils;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ public class LauncherGUI extends JFrame {
     private JButton signOutButton;
     private JSpinner spinner1;
     private JComboBox versionComboBox;
+    private JTextField hostBox;
 
     public LauncherGUI() {
         setContentPane(contentPane);
@@ -51,7 +53,11 @@ public class LauncherGUI extends JFrame {
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         signOutButton.addActionListener(e -> {
-
+            try {
+                LoginUtils.signOutOrInvalidate();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         });
     }
 
