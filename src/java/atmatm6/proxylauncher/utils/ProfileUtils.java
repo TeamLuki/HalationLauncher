@@ -1,5 +1,6 @@
 package atmatm6.proxylauncher.utils;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import com.sun.org.apache.xerces.internal.dom.DOMOutputImpl;
 import com.sun.org.apache.xml.internal.serialize.DOMSerializerImpl;
 import org.json.simple.JSONObject;
@@ -107,12 +108,12 @@ public class ProfileUtils {
         }
     }
 
-    static void write(String s, Object o) throws IOException, SAXException, ParserConfigurationException {
+    static void write(String whatToWrite, Object o) throws IOException, SAXException, ParserConfigurationException {
         Text curacc;
         Element selacc;
         NodeList nl2;
         JSONObject obj;
-        switch (s){
+        switch (whatToWrite){
             case "auth"://// TODO: Complete authentication setting writer
                 obj = (JSONObject) o;
                 JSONObject selprof = (JSONObject) obj.get("selectedProfile");
@@ -196,27 +197,36 @@ public class ProfileUtils {
             e.printStackTrace();
         }
     }
-    public static String[] read(String s){
+    public static String[] read(String whatToRead) throws InvalidArgumentException {
         try {
             doc = docBuilder.parse(settingsFile);
             prof = docBuilder.parse(profileFile);
         } catch (SAXException | IOException e) {
             e.printStackTrace();
         }
-        switch (s) {
-            case "accessToken":
-                //ToDO: look for accessToken not use doc
+        switch (whatToRead) {
+            case "tokens":
                 Element selacc = (Element) doc.getElementsByTagName("selectedAccount").item(0);
                 Node accounts = doc.getElementsByTagName("accounts").item(0);
                 NodeList nl = accounts.getChildNodes();
+                String[] tokens = new String[2];
+                boolean tokensexist = false;
                 for (int temp = 0; temp < nl.getLength(); temp++){
                     Node nNode = nl.item(temp);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE){
                         Element nElement = (Element) nNode;
-                        if (nElement.getElementsByTagName("acto").item(0).getTextContent().equals(selacc.getTextContent())) return new String[]{selacc.getTextContent()};
+                        String uuid = nElement.getAttributeNode("uuid").getTextContent();
+                        if(uuid.equals(selacc.getTextContent())) {
+                            tokens[0] = nElement.getElementsByTagName("acto").item(0).getTextContent();
+                            tokens[1] = nElement.getElementsByTagName("clto").item(0).getTextContent();
+                            tokensexist = true;
+                            break;
+                        }
                     }
                 }
-                break;
+                if (tokensexist) return tokens;
+                //bad practice (i think) but it's better than throwing (insert italics here)another(end of italics) exception.
+                else return new String[]{"it's cold outside"};
             case "hostPort":
                 try {
                     //ToDO: look for host and port not use doc
@@ -227,7 +237,13 @@ public class ProfileUtils {
                 } catch (TransformerException ignored){}
                 break;
             case "profiles":
+                NodeList profiles = doc.getElementsByTagName("profile");
+                for (int c = 0; c < profiles.getLength(); c += 1){
+
+                }
                 break;
+            default:
+                throw new IllegalArgumentException();
         }
         throw new NotImplementedException();
     }
