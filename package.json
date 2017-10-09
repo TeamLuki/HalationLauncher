@@ -1,0 +1,17 @@
+{
+  "name": "mcproxy-server",
+  "version": "1.0.0",
+  "description": "Goes with the RealmsProxy Launcher",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Atmatm6",
+  "license": "ISC",
+  "dependencies": {
+    "minecraft-protocol": "^1.4.1",
+    "sqlite3": "^3.1.13",
+    "ws": "^3.2.0"
+  },
+  "devDependencies": {}
+}
