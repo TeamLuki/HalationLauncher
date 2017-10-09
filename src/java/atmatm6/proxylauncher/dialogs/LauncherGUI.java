@@ -22,6 +22,7 @@ public class LauncherGUI extends JFrame {
     private JPanel newsPanel;
     private JButton signOutButton;
     private JSpinner spinner1;
+    private JComboBox versionComboBox;
 
     public LauncherGUI() {
         setContentPane(contentPane);

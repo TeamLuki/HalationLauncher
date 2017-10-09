@@ -199,19 +199,23 @@ public class ProfileUtils {
     public static String[] read(String s){
         try {
             doc = docBuilder.parse(settingsFile);
-
             prof = docBuilder.parse(profileFile);
         } catch (SAXException | IOException e) {
             e.printStackTrace();
         }
-        switch (s){
+        switch (s) {
             case "accessToken":
-                try {
-                    //ToDO: look for accessToken not use doc
-                    StreamResult result = new StreamResult(new StringWriter());
-                    transformer.transform(new DOMSource(), result);
-                    return new String[]{result.getWriter().toString()};
-                } catch (TransformerException ignored){}
+                //ToDO: look for accessToken not use doc
+                Element selacc = (Element) doc.getElementsByTagName("selectedAccount").item(0);
+                Node accounts = doc.getElementsByTagName("accounts").item(0);
+                NodeList nl = accounts.getChildNodes();
+                for (int temp = 0; temp < nl.getLength(); temp++){
+                    Node nNode = nl.item(temp);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE){
+                        Element nElement = (Element) nNode;
+                        if (nElement.getElementsByTagName("acto").item(0).getTextContent().equals(selacc.getTextContent())) return new String[]{selacc.getTextContent()};
+                    }
+                }
                 break;
             case "hostPort":
                 try {

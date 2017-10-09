@@ -60,7 +60,7 @@ public class LoginUtils {
     }
 
     public boolean valid() throws NotImplementedException{
-        ProfileUtils.read("");
+        String accessToken = ProfileUtils.read("accessToken")[0];
         return false;
     }
     public boolean refresh() throws NotImplementedException{

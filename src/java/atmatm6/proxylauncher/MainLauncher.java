@@ -14,6 +14,7 @@ public class MainLauncher {
         ProfileUtils pu = new ProfileUtils();
         pu.setup();
         final LoginUtils loginUtils = new LoginUtils();
+
         // TODO: Check if logged in here.
         final LoginDialog logindialog = new LoginDialog();
         logindialog.setLoginutils(loginUtils);
