@@ -5,17 +5,13 @@ import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import static atmatm6.proxylauncher.misc.HttpRunner.post;
 
 public class LoginUtils {
     private static CloseableHttpClient client;
@@ -39,12 +35,11 @@ public class LoginUtils {
     }
 
     // Returns true if successful
-    public static boolean authenticate() throws InvalidCredentialsException, IOException, ParseException, ParserConfigurationException, SAXException, InvalidArgumentException {
+    public static boolean authenticate() throws Exception {
         if (email == null || password == null) throw new InvalidCredentialsException();
         String[] re = (String[]) ProfileUtils.read("tokens");
         boolean useclto = false;
         if (!re[0].equals("it's cold outside")) useclto = true;
-        HttpPost post = new HttpPost(server+"/authenticate");
         JSONObject obj = new JSONObject();
         JSONObject agent = new JSONObject();
         agent.put("version",1);
@@ -53,11 +48,7 @@ public class LoginUtils {
         obj.put("username", email);
         obj.put("password",password);
         if (useclto) obj.put("clientToken",re[1]);
-        StringEntity entity = new StringEntity(obj.toJSONString());
-        post.setEntity(entity);
-        post.setHeader("Accept", "application/json");
-        post.setHeader("Content-type", "application/json");
-        CloseableHttpResponse resp = client.execute(post);
+        CloseableHttpResponse resp = post(server + "/authenticate",obj.toJSONString());
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 200){
             ProfileUtils.write("auth",parser.parse(body));
@@ -76,17 +67,14 @@ public class LoginUtils {
     }
 
     // returns false if invalid
-    public static boolean refresh() throws IOException, ParseException, ParserConfigurationException, SAXException, InvalidArgumentException {
+    public static boolean refresh() throws Exception {
         String[] re = (String[]) ProfileUtils.read("tokens");
         if (!validate(re)) return false;
         HttpPost post = new HttpPost(server + "/refresh");
         JSONObject obj = new JSONObject();
         obj.put("accessToken",re[0]);
         obj.put("clientToken",re[1]);
-        StringEntity se = new StringEntity(obj.toJSONString());
-        post.setEntity(se);
-        post.setHeader("Content-type", "application/json");
-        CloseableHttpResponse resp = client.execute(post);
+        CloseableHttpResponse resp = post(server + "/refresh", obj.toJSONString());
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 200){
             ProfileUtils.write("auth",parser.parse(body));
@@ -95,16 +83,13 @@ public class LoginUtils {
         return false;
     }
 
-    private static boolean validate(String[] re) throws IOException {
+    private static boolean validate(String[] re) throws Exception {
         if (re[0].equals("it's cold outside")) return false;
         HttpPost post = new HttpPost(server + "/validate");
         JSONObject obj = new JSONObject();
         obj.put("accessToken",re[0]);
         obj.put("clientToken",re[1]);
-        StringEntity se = new StringEntity(obj.toJSONString());
-        post.setEntity(se);
-        post.setHeader("Content-type", "application/json");
-        CloseableHttpResponse resp = client.execute(post);
+        CloseableHttpResponse resp = post("","");
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 204)return true;
         return false;
@@ -112,6 +97,7 @@ public class LoginUtils {
 
     public static void signOutOrInvalidate() throws Exception {
         HttpPost post;
+        JSONObject obj;
         if (email == null || password == null) {
             String[] re  = new String[]{"it's cold outside"};
             try {
@@ -119,25 +105,19 @@ public class LoginUtils {
             } catch (InvalidArgumentException ignored){}
             if (re[0].equals("it's cold outside") )throw new Exception();
             post = new HttpPost();
-            JSONObject obj = new JSONObject();
+            obj = new JSONObject();
             obj.put("accessToken",re[0]);
             obj.put("clientToken",re[1]);
-            StringEntity se = new StringEntity(obj.toJSONString());
-            post.setEntity(se);
-            post.setHeader("Content-type", "application/json");
         } else {
             post = new HttpPost();
-            JSONObject obj = new JSONObject();
+            obj = new JSONObject();
             obj.put("username",email);
             obj.put("password",password);
-            StringEntity se = new StringEntity(obj.toJSONString());
-            post.setEntity(se);
-            post.setHeader("Content-type", "application/json");
         }
-        CloseableHttpResponse resp = client.execute(post);
+        CloseableHttpResponse resp = post(server + "", obj.toJSONString());
         if (resp.getStatusLine().getStatusCode() != 200) throw new Exception();
         else {
-
+            ProfileUtils.write("remAuth",null);
         }
     }
 }

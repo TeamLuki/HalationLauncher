@@ -4,14 +4,9 @@ import atmatm6.proxylauncher.dialogs.LauncherGUI;
 import atmatm6.proxylauncher.dialogs.LoginDialog;
 import atmatm6.proxylauncher.launcher.LoginUtils;
 import atmatm6.proxylauncher.launcher.ProfileUtils;
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import org.json.simple.parser.ParseException;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 public class MainLauncher {
 
@@ -21,8 +16,7 @@ public class MainLauncher {
         boolean runLogin = false;
         try {
             runLogin = LoginUtils.refresh();
-        } catch (IOException | ParseException | ParserConfigurationException | SAXException | InvalidArgumentException ignored) {}
-        // TODO: Check if logged in here.
+        } catch (Exception ignored) {}
         if (runLogin) {
             final LoginDialog logindialog = new LoginDialog();
             logindialog.pack();

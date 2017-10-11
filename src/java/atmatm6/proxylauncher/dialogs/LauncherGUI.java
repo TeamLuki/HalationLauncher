@@ -55,6 +55,7 @@ public class LauncherGUI extends JFrame {
         signOutButton.addActionListener(e -> {
             try {
                 LoginUtils.signOutOrInvalidate();
+                System.out.print("Cya!");
             } catch (Exception e1) {
                 e1.printStackTrace();
             }

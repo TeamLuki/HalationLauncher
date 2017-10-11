@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <profiles>
-    <profile selected="" user="" location="" version="" jvmargs=""/>
+    <profile selected="" name="Default" location="" version="" jvmargs="-Xmx1G -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M"/>
 </profiles>

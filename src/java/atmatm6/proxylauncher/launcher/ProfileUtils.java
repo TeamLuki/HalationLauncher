@@ -6,7 +6,6 @@ import com.sun.org.apache.xml.internal.serialize.DOMSerializerImpl;
 import org.json.simple.JSONObject;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,9 +14,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import java.io.*;
+import java.net.URISyntaxException;
 
 public class ProfileUtils {
-    //TODO: Setup special directory moving tool
+    //TODO: Setup special directory movement thingy
     private static String workingdirURL;
     private static String profileURL;
     private static String settingsURL;
@@ -36,11 +36,27 @@ public class ProfileUtils {
             profileURL = workingdirURL + "\\profiles.xml";
             settingsURL = workingdirURL + "\\settings.xml";
         } else {
+            if (OS.contains("MAC")){
+                try {
+                    workingdirURL = ProfileUtils.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+                    workingdir = new File(workingdirURL);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(workingdir);
+                if (workingdir.isDirectory() && workingdir.exists()){
+                    if (workingdir.length() == 1){
+
+                    }
+                }
+            }
             workingdirURL = System.getProperty("user.home") + "/ShanaLauncher";
             profileURL = workingdirURL + "/profiles.xml";
             settingsURL = workingdirURL + "/settings.xml";
         }
-        workingdir = new File(workingdirURL);
+        if (!OS.contains("MAC")){
+            workingdir = new File(workingdirURL);
+        }
         profileFile = new File(profileURL);
         settingsFile = new File(settingsURL);
         workingdir.mkdirs();
@@ -50,36 +66,22 @@ public class ProfileUtils {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        if (!profileFile.exists()) {
+        try {
+            doc = docBuilder.parse(profileFile);
+            ProfileUtils.write("p","");
+        } catch (SAXException e) {
             try {
-                profileFile.createNewFile();
+                profileFile.delete();
                 InputStream in = getClass().getResourceAsStream("/shanaprofile.xml");
                 byte[] buffer = new byte[in.available()];
                 in.read(buffer);
                 OutputStream out = new FileOutputStream(profileFile);
                 out.write(buffer);
                 out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            prof = docBuilder.parse(profileFile);
-        } catch (SAXException | IOException e) {
+                doc = docBuilder.parse(profileFile);
+            }catch (Exception ignored){}
+        } catch (IOException | ParserConfigurationException e) {
             e.printStackTrace();
-        }
-        if (!settingsFile.exists()){
-            try {
-                settingsFile.createNewFile();
-                InputStream in = getClass().getResourceAsStream("/shanasettings.xml");
-                byte[] buffer = new byte[in.available()];
-                in.read(buffer);
-                OutputStream out = new FileOutputStream(settingsFile);
-                out.write(buffer);
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         try {
             doc = docBuilder.parse(settingsFile);
@@ -108,14 +110,28 @@ public class ProfileUtils {
         Text curacc;
         Element selacc;
         NodeList nl2;
+        NodeList nl;
+        Node accounts;
         JSONObject obj;
         switch (whatToWrite){
-            case "auth"://// TODO: Complete authentication setting writer
+            case "remAuth":
+                selacc = (Element) doc.getElementsByTagName("selectedAccount").item(0);
+                accounts = doc.getElementsByTagName("accounts").item(0);
+                nl = accounts.getChildNodes();
+                for (int temp = 0; temp < nl.getLength(); temp++){
+                    Node nNode = nl.item(temp);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE){
+                        Element nElement = (Element) nNode;
+                        if (nElement.getAttributeNode("uuid").getValue().equals(selacc.getTextContent())) accounts.removeChild(nNode);
+                    }
+                }
+                break;
+            case "auth":
                 obj = (JSONObject) o;
                 JSONObject selprof = (JSONObject) obj.get("selectedProfile");
                 boolean exists = false;
-                Node accounts = doc.getElementsByTagName("accounts").item(0);
-                NodeList nl = accounts.getChildNodes();
+                accounts = doc.getElementsByTagName("accounts").item(0);
+                nl = accounts.getChildNodes();
                 for (int temp = 0; temp < nl.getLength(); temp++){
                     Node nNode = nl.item(temp);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE){
@@ -163,10 +179,19 @@ public class ProfileUtils {
                 selacc.appendChild(curacc);
                 saveDoc();
                 break;
-            case "newProf":
-                throw new NotImplementedException();
-            case "editProf":
-                throw new NotImplementedException();
+            case "firstProf":
+                NodeList profiles = prof.getElementsByTagName("profile");
+                for (int re = 0; re < profiles.getLength(); re+=1){
+                    Node nNode = profiles.item(re);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE){
+                        Element nElement = (Element) nNode;
+                        if (nElement.hasAttribute("selected")) {
+                            nElement.setAttribute("version",VersionUtils.getLatestVersion());
+                            nElement.setAttribute("location",workingdirURL);
+                        }
+                    }
+                }
+                saveProfile();
             default:
                 throw new IllegalArgumentException("Not a valid argument lol");
         }
@@ -226,12 +251,13 @@ public class ProfileUtils {
                 //bad practice (i think) but it's better than throwing (insert italics here)another(end of italics) exception.
                 else return new String[]{"it's cold outside"};
             case "hostPort":
-                Element location = (Element) doc.getElementsByTagName("").item(0);
+                Element location = (Element) doc.getElementsByTagName("location").item(0);
                 String host = location.getElementsByTagName("host").item(0).getTextContent();
                 String port = location.getElementsByTagName("port").item(0).getTextContent();
                 return new String[]{host,port};
             case "profiles":
                 NodeList profiles = doc.getElementsByTagName("profile");
+
                 for (int c = 0; c < profiles.getLength(); c += 1){
                     Node nNode =  profiles.item(c);
                     if (nNode.getNodeType() == Node.ELEMENT_NODE){
