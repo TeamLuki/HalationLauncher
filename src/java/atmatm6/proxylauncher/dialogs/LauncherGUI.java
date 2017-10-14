@@ -10,9 +10,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class LauncherGUI extends JFrame {
     private JPanel contentPane;
@@ -25,6 +27,7 @@ public class LauncherGUI extends JFrame {
     private JSpinner spinner1;
     private JComboBox versionComboBox;
     private JTextField hostBox;
+    private JButton aboutButton;
 
     public LauncherGUI() {
         setContentPane(contentPane);
@@ -39,6 +42,7 @@ public class LauncherGUI extends JFrame {
         });
         newsPanel.add(jpane, BorderLayout.CENTER);
         buttonOK.addActionListener(e -> onOK());
+        JFrame self = this;
 
         buttonCancel.addActionListener(e -> onCancel());
 
@@ -57,6 +61,22 @@ public class LauncherGUI extends JFrame {
                 LoginUtils.signOutOrInvalidate();
                 System.out.print("Cya!");
             } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
+        aboutButton.addActionListener(e -> {
+            try {
+                InputStream stream = LauncherGUI.class.getResourceAsStream("about.txt");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                String title = reader.readLine();
+                StringBuffer buf = new StringBuffer();
+                String str;
+                while ((str = reader.readLine()) != null) {
+                    buf.append(str + "\n" );
+                }
+                try { stream.close(); } catch (Throwable ignore) {}
+                JOptionPane.showMessageDialog(self,buf.toString(),title, JOptionPane.OK_OPTION);
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

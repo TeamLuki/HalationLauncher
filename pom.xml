@@ -34,6 +34,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <outputDirectory>$TRAVIS_BUILD_DIR</outputDirectory>
     </build>
 
     <repositories>
