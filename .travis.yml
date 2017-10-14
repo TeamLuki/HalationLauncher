@@ -1,10 +1,11 @@
 language: java
 script:
 - mvn assembly:assembly
-- ls
-- cd $TRAVIS_BUILD_DIR/target
+- cd target
 - mv proxy-launcher-*-jar-with-dependencies.jar proxy-launcher.jar
+- ls
 - JAR=$TRAVIS_BUILD_DIR/target/proxy-launcher.jar
+- echo $JAR
 deploy:
   provider: releases
   api_key:
