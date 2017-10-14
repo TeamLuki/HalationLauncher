@@ -9,7 +9,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="12092615-1b81-44d8-9de3-08a15f2970e4" name="Main Changelist" comment="attempt 2 cause why not">
+    <list default="true" id="12092615-1b81-44d8-9de3-08a15f2970e4" name="Main Changelist" comment="attempt 3 cause why not">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
     </list>
@@ -81,8 +81,8 @@
       <file leaf-file-name=".travis.yml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="17" column="24" lean-forward="false" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
+            <state relative-caret-position="136">
+              <caret line="8" column="34" lean-forward="false" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -943,7 +943,14 @@
       <option name="project" value="LOCAL" />
       <updated>1508002724759</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="attempt 3 cause why not">
+      <created>1508004261810</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1508004261810</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TodoView" selected-index="3">
@@ -1032,7 +1039,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="ProfileUtils.write(&quot;auth&quot;) finally uses equals instead of == for uuid checking&#10;Does check uuid instead of clientToken" />
     <MESSAGE value="remove stuff cause idiotic cloning is idiotic" />
     <MESSAGE value="added launchutils, added token validation and refresh because typing takes energy" />
     <MESSAGE value="added launchutils, added token validation and refresh because typing takes energy&#10;cleaner authentication cause string is ugly" />
@@ -1057,7 +1063,8 @@
     <MESSAGE value="attempt to setup alpha tag" />
     <MESSAGE value="can't use variables rip" />
     <MESSAGE value="attempt 2 cause why not" />
-    <option name="LAST_COMMIT_MESSAGE" value="attempt 2 cause why not" />
+    <MESSAGE value="attempt 3 cause why not" />
+    <option name="LAST_COMMIT_MESSAGE" value="attempt 3 cause why not" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1410,8 +1417,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="17" column="24" lean-forward="false" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
+        <state relative-caret-position="136">
+          <caret line="8" column="34" lean-forward="false" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="34" />
           <folding />
         </state>
       </provider>
