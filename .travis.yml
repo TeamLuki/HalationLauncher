@@ -3,7 +3,7 @@ script:
 - mvn assembly:assembly
 - ls
 - cd $TRAVIS_BUILD_DIR/target
-- mv proxy-launcher-*-jar proxy-launcher.jar
+- mv proxy-launcher-*-jar-with-dependencies.jar proxy-launcher.jar
 - JAR=$TRAVIS_BUILD_DIR/target/proxy-launcher.jar
 deploy:
   provider: releases
