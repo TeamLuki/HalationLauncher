@@ -15,5 +15,4 @@ deploy:
   file: "$JAR"
   tag_name: "Alpha"
   on:
-    tags: true
     repo: DreamLiveGitHub/HalationLauncher
