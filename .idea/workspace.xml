@@ -9,7 +9,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="12092615-1b81-44d8-9de3-08a15f2970e4" name="Main Changelist" comment="realized running a pom dependent command in a dir without a pom doesn't work rip">
+    <list default="true" id="12092615-1b81-44d8-9de3-08a15f2970e4" name="Main Changelist" comment="i don't like how painful changing commit names to match stuff is">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.travis.yml" afterPath="$PROJECT_DIR$/.travis.yml" />
     </list>
@@ -82,7 +82,7 @@
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
-              <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
+              <caret line="4" column="12" lean-forward="true" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -1004,7 +1004,14 @@
       <option name="project" value="LOCAL" />
       <updated>1507996031336</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="i don't like how painful changing commit names to match stuff is">
+      <created>1507996216917</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1507996216917</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView" selected-index="3">
@@ -1114,7 +1121,8 @@
     <MESSAGE value="added what i find is the best solution for getting maven stuffs" />
     <MESSAGE value="went down in the worst way possible, tested NAME on personal linux device" />
     <MESSAGE value="realized running a pom dependent command in a dir without a pom doesn't work rip" />
-    <option name="LAST_COMMIT_MESSAGE" value="realized running a pom dependent command in a dir without a pom doesn't work rip" />
+    <MESSAGE value="i don't like how painful changing commit names to match stuff is" />
+    <option name="LAST_COMMIT_MESSAGE" value="i don't like how painful changing commit names to match stuff is" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1470,7 +1478,7 @@
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
+          <caret line="4" column="12" lean-forward="true" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
           <folding />
         </state>
       </provider>
