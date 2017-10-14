@@ -1,6 +1,7 @@
 language: java
 script:
 - mvn assembly:assembly
+- ls $TRAVIS_BUILD_DIR/target
 deploy:
   provider: releases
   api_key:
