@@ -5,8 +5,7 @@ script:
 - echo $NAME
 - cd target
 - mv proxy-launcher-*-jar-with-dependencies.jar $(echo $NAME).jar
-- ls -R $TRAVIS_BUILD_DIR
-- JAR=$(pwd)/proxy-launcher.jar
+- JAR=$(pwd)/$(echo $NAME).jar
 - echo $JAR
 deploy:
   skip_cleanup: true
