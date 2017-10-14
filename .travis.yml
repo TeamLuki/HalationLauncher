@@ -15,6 +15,6 @@ deploy:
   api_key:
     secure: h0oA2r8JaB7GNC/YnGkJhdrvf7r32em9G0doYHB9zCdZauab3UBb7q3b7/gYH7SaXhsvAvov4bFaeQUFncGoKQFcYvWWl+kPFNw9SLd0UMSpbP1J5s3Mow+VwF09v0BvzFHabrxbruPz6vqUgnUWkPgR9iMPncx/eh2EnV9e4Lt/P/V7j2ek0A2/JNBcQEQHIejyrknIfh2gsuCYYZvre/HN27/V9dlrVVFXZsaQJTd0nY5A0D9ETijOm6S3gH5q0/yV+IijgGpdqMmzdXoXlfj5i13VSFpo2vQ6d0uET63lnIJp6Tzq4RXORPITlZP0ZsX0hmZ+FJrwJC7mzL33puxau8711OJ5zfxrnWeG2aT+y7W6HXmQVlRHfpGs6B9RWFUKIpxXcdTFmmCbqhQitEGDkW8jnytvItNt1xrZLPJXs72uXPmEtpI7PYlLoiuJcIdB7YcOJv6zpr9cHG3vPVfNT1SnOe9JWqeQHVfPObA0KyX2azbYbNr4Z8ZzAg6PNpE7TVlGECGZ9v3VCBRbO9G9yV26zjU7O6JGLJ6ngb0PyE4Nfldyn53BI9umA5CGI+9DoYaeuf6gRDsDolI6JmuzzhM3eV+5NIZ3tBaRlGYW1JfCNj/JWQUyiD5toMSh7mYuZAjYopxDYqp2ZrDi9tY45Mm+/uNIEgXGxEOuO6w=
   file: "$JAR"
-  tag_name: "Alpha"
+  tag_name: "Alpha $VERSION"
   on:
     repo: DreamLiveGitHub/HalationLauncher
