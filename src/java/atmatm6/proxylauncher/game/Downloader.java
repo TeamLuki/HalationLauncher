@@ -2,7 +2,6 @@ package atmatm6.proxylauncher.game;
 
 import atmatm6.proxylauncher.launcher.VersionUtils;
 import atmatm6.proxylauncher.misc.LibraryDownload;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -19,7 +18,7 @@ class Downloader {
             for (Object anArray : array) {
                 es.submit(new LibraryDownload(anArray));
             }
-        } catch (InvalidArgumentException e) {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }

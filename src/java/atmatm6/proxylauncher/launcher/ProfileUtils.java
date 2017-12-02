@@ -1,6 +1,5 @@
 package atmatm6.proxylauncher.launcher;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import com.sun.org.apache.xerces.internal.dom.DOMOutputImpl;
 import com.sun.org.apache.xml.internal.serialize.DOMSerializerImpl;
 import org.json.simple.JSONObject;
@@ -190,7 +189,7 @@ public class ProfileUtils {
             e.printStackTrace();
         }
     }
-    public static Object read(String whatToRead) throws InvalidArgumentException {
+    public static Object read(String whatToRead) throws IllegalArgumentException {
         try {
             doc = docBuilder.parse(settingsFile);
         } catch (SAXException | IOException e) {

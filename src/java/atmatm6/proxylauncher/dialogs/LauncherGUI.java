@@ -4,7 +4,6 @@ import atmatm6.proxylauncher.game.LaunchUtils;
 import atmatm6.proxylauncher.launcher.LoginUtils;
 import atmatm6.proxylauncher.launcher.VersionUtils;
 import atmatm6.proxylauncher.misc.SortedComboBoxModel;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -47,7 +46,7 @@ public class LauncherGUI extends JFrame {
         buttonOK.addActionListener(e -> {
             try {
                 onOK();
-            } catch (InvalidArgumentException e1) {
+            } catch (IllegalArgumentException e1) {
                 e1.printStackTrace();
             }
         });
@@ -91,11 +90,7 @@ public class LauncherGUI extends JFrame {
         versionComboBox.setModel(model);
     }
 
-
-
-
-
-    private void onOK() throws InvalidArgumentException {
+    private void onOK() throws IllegalArgumentException {
         LaunchUtils launch = new LaunchUtils();
         launch.launch();
     }

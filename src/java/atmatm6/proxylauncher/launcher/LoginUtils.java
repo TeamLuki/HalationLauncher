@@ -1,7 +1,6 @@
 package atmatm6.proxylauncher.launcher;
 
 import com.sun.istack.internal.Nullable;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -100,7 +99,7 @@ public class LoginUtils {
             String[] re  = new String[]{"it's cold outside"};
             try {
                 re = (String[]) ProfileUtils.read("tokens");
-            } catch (InvalidArgumentException ignored){}
+            } catch (IllegalArgumentException ignored){}
             if (re[0].equals("it's cold outside") )throw new Exception();
             post = new HttpPost();
             obj = new JSONObject();

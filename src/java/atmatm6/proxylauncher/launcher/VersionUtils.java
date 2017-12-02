@@ -1,6 +1,5 @@
 package atmatm6.proxylauncher.launcher;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
@@ -51,7 +50,7 @@ public class VersionUtils {
         } catch (Exception ignored){}
         return null;
     }
-    public static String getSelectedVersion() throws InvalidArgumentException {
+    public static String getSelectedVersion() throws IllegalArgumentException {
         Element profiles = (Element) ProfileUtils.read("version");
         return profiles.getAttributeNode("version").getValue();
     }
