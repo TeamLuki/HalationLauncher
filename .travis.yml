@@ -8,6 +8,11 @@ script:
 - cd target
 - mv proxy-launcher-*-jar-with-dependencies.jar $(echo $FILENAME).jar
 - JAR=$(pwd)/$(echo $FILENAME).jar
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "Shana6"
+  - git config --local user.email "atmatm6000@outlook.com"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   skip_cleanup: true
   provider: releases
