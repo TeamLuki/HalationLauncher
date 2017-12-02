@@ -12,7 +12,7 @@ before_deploy:
   # Set up git user name and tag this commit
   - git config --local user.name "Shana6"
   - git config --local user.email "atmatm6000@outlook.com"
-  - git tag "Alpha $(git log --format=%h -1)"
+  - git tag "Alpha-$(git log --format=%h -1)"
 deploy:
   skip_cleanup: true
   provider: releases
