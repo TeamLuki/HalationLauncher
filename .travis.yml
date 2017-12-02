@@ -3,6 +3,7 @@ script:
 - mvn assembly:assembly
 - NAME=$(mvn -q -Dexec.executable="echo" -Dexec.args='${project.artifactId}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.3.1:exec 2>/dev/null)
 - VERSION=$(git log --format="%H" -n 1 | cut -c1-7)
+- echo $VERSION
 - FILENAME=$(echo $NAME)-$(echo $VERSION)
 - cd target
 - mv proxy-launcher-*-jar-with-dependencies.jar $(echo $FILENAME).jar
