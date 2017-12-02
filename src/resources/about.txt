@@ -1,1 +1,5 @@
-Made by DreamLive Inc. Created by Shana.
+HalationLauncher
+Created by Shana, made in DreamLive Inc.
+I don't remember how much stuff that's from StackOverflow,
+just go there for your questions about what to use when making something
+using Java or another amazing programming language.

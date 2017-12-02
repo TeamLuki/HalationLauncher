@@ -1,16 +1,20 @@
 package atmatm6.proxylauncher.dialogs;
 
+import atmatm6.proxylauncher.game.LaunchUtils;
 import atmatm6.proxylauncher.launcher.LoginUtils;
+import atmatm6.proxylauncher.launcher.VersionUtils;
+import atmatm6.proxylauncher.misc.SortedComboBoxModel;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +25,6 @@ public class LauncherGUI extends JFrame {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTabbedPane tabs;
-    private JComboBox profileChooser;
     private JPanel newsPanel;
     private JButton signOutButton;
     private JSpinner spinner1;
@@ -36,16 +39,20 @@ public class LauncherGUI extends JFrame {
         Platform.runLater(() -> {
             WebView wv = new WebView();
             WebEngine we = wv.getEngine();
-            we.load("http://texttale.square7.ch/proxynews.html");
+            we.load("http://texttale.square7.ch/proxynews.html"); //TODO: Lead to a dreamlive page when website exists
             we.setJavaScriptEnabled(false);
             jpane.setScene(new Scene(wv));
         });
         newsPanel.add(jpane, BorderLayout.CENTER);
-        buttonOK.addActionListener(e -> onOK());
+        buttonOK.addActionListener(e -> {
+            try {
+                onOK();
+            } catch (InvalidArgumentException e1) {
+                e1.printStackTrace();
+            }
+        });
         JFrame self = this;
-
         buttonCancel.addActionListener(e -> onCancel());
-
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -53,9 +60,6 @@ public class LauncherGUI extends JFrame {
                 onCancel();
             }
         });
-
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         signOutButton.addActionListener(e -> {
             try {
                 LoginUtils.signOutOrInvalidate();
@@ -72,7 +76,7 @@ public class LauncherGUI extends JFrame {
                 StringBuffer buf = new StringBuffer();
                 String str;
                 while ((str = reader.readLine()) != null) {
-                    buf.append(str + "\n" );
+                    buf.append(str + "\n");
                 }
                 try { stream.close(); } catch (Throwable ignore) {}
                 JOptionPane.showMessageDialog(self,buf.toString(),title, JOptionPane.OK_OPTION);
@@ -80,14 +84,24 @@ public class LauncherGUI extends JFrame {
                 e1.printStackTrace();
             }
         });
+        SortedComboBoxModel<String> model = new SortedComboBoxModel<>();
+        VersionUtils.getVersions().forEach((k,v) -> {
+            model.addElement(k);
+        });
+        versionComboBox.setModel(model);
     }
 
-    private void onOK() {
-        dispose();
-        throw new NotImplementedException();
+
+
+
+
+    private void onOK() throws InvalidArgumentException {
+        LaunchUtils launch = new LaunchUtils();
+        launch.launch();
     }
 
     private void onCancel() {
         dispose();
+        System.exit(0);
     }
 }

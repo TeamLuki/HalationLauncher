@@ -4,19 +4,36 @@ import atmatm6.proxylauncher.dialogs.LauncherGUI;
 import atmatm6.proxylauncher.dialogs.LoginDialog;
 import atmatm6.proxylauncher.launcher.LoginUtils;
 import atmatm6.proxylauncher.launcher.ProfileUtils;
+import atmatm6.proxylauncher.misc.HttpRunner;
+import atmatm6.proxylauncher.misc.TextAreaOutputStream;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.PrintStream;
+
 
 public class MainLauncher {
 
     public static void main(String[] args){
+        if (GraphicsEnvironment.isHeadless()){
+            System.out.println("Requires a non-headless computer sorry.");
+            System.exit(1);
+        }
+        //forgot what the text area and print stream were actually for rip
+        JTextArea local = new JTextArea();
+        PrintStream out = new PrintStream(new TextAreaOutputStream(local));
         ProfileUtils pu = new ProfileUtils();
         pu.setup();
-        boolean runLogin = false;
+        LoginUtils.setup();
+        HttpRunner.setup();
+        boolean runLogin = true;
         try {
             runLogin = LoginUtils.refresh();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+            System.out.println("erare");
+        }
         if (runLogin) {
             final LoginDialog logindialog = new LoginDialog();
             logindialog.pack();
@@ -28,7 +45,6 @@ public class MainLauncher {
                     LauncherGUI lg = new LauncherGUI();
                     lg.pack();
                     lg.setVisible(true);
-
                 }
             });
         } else {

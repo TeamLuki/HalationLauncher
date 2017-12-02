@@ -18,6 +18,7 @@ public class HttpRunner {
     }
     public static CloseableHttpResponse post(String url, String payload) throws Exception {
         Future<CloseableHttpResponse> task = es.submit(() -> {
+            System.out.println("Thread" + new Thread().currentThread().getId() + "is performing a post request at \n"+url);
             try {
                 HttpPost post = new HttpPost(url);
                 StringEntity se = new StringEntity(payload);
@@ -34,8 +35,10 @@ public class HttpRunner {
 
     public static CloseableHttpResponse get(String url) throws Exception {
         Future<CloseableHttpResponse> task = es.submit(() -> {
+            System.out.println("Thread " + new Thread().currentThread().getName() + " is performing a get request at:\n\t"+url);
             try {
                 HttpGet get = new HttpGet(url);
+                get.setHeader("Accept", "application/json");
                 return client.execute(get);
             } catch (Exception ignored) {
                 return null;

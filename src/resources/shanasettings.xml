@@ -5,6 +5,7 @@
         <host>localhost</host>
         <port>24811</port>
     </location>
+    <version/>
     <selectedAccount/>
     <accounts/>
 </launcher>

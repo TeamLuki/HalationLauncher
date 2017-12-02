@@ -1,11 +1,15 @@
 package atmatm6.proxylauncher.misc;
 
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.CloseableHttpResponse;
+
+import java.io.BufferedInputStream;
+
+import static atmatm6.proxylauncher.misc.HttpRunner.get;
 
 public class AssetDownload implements Runnable {
     private String bbhash;
     private String hash;
-    private String libloc = "http://resources.download.minecraft.net/";
+    private String libdloc = "";
     public AssetDownload(String hash){
         bbhash = hash.substring(0,1);
         this.hash = hash;
@@ -13,6 +17,11 @@ public class AssetDownload implements Runnable {
 
     @Override
     public void run() {
-        HttpGet get = new HttpGet();
+        try {
+            CloseableHttpResponse resp = get("temp");
+            BufferedInputStream is = new BufferedInputStream(resp.getEntity().getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

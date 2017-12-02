@@ -8,7 +8,7 @@
 
     <groupId>atmatm6</groupId>
     <artifactId>proxy-launcher</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <build>
         <plugins>
@@ -34,7 +34,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <outputDirectory>$TRAVIS_BUILD_DIR</outputDirectory>
     </build>
 
     <repositories>

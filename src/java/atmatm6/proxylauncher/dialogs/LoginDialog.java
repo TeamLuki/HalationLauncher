@@ -1,10 +1,11 @@
 package atmatm6.proxylauncher.dialogs;
 
 import atmatm6.proxylauncher.launcher.LoginUtils;
-import org.apache.http.auth.InvalidCredentialsException;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LoginDialog extends JFrame {
     private JPanel contentPane;
@@ -16,10 +17,6 @@ public class LoginDialog extends JFrame {
     private JComboBox loggedInComboBox;
     private JLabel loggedinlabel;
     public boolean closing;
-    /* Maybe add more later, currently using boolean
-    * true - Exit
-    * false - Launching
-    */
 
     public LoginDialog() {
         setTitle("Login to ProxyLauncher");
@@ -47,13 +44,14 @@ public class LoginDialog extends JFrame {
         String s = new String(passwordField.getPassword());
         LoginUtils.setLoginDetails(emailField.getText(),s);
         try {
-            if (LoginUtils.authenticate()){
-                closing = false;
-                dispose();
-            }
-        } catch (InvalidCredentialsException e) {
+            errorField.setText("");
+            LoginUtils.authenticate();
+            closing = false;
+            dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
             errorField.setText("Sorry, invalid connection credentials, please try again.");
-        } catch (Exception ignored) {}
+        }
     }
 
     private void onCancel() {

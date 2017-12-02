@@ -35,11 +35,9 @@ public class LoginUtils {
     }
 
     // Returns true if successful
-    public static boolean authenticate() throws Exception {
-        if (email == null || password == null) throw new InvalidCredentialsException();
+    public static void authenticate() throws Exception {
+        if (email.isEmpty()||password.isEmpty()) throw new InvalidCredentialsException();
         String[] re = (String[]) ProfileUtils.read("tokens");
-        boolean useclto = false;
-        if (!re[0].equals("it's cold outside")) useclto = true;
         JSONObject obj = new JSONObject();
         JSONObject agent = new JSONObject();
         agent.put("version",1);
@@ -47,13 +45,14 @@ public class LoginUtils {
         obj.put("agent",agent);
         obj.put("username", email);
         obj.put("password",password);
-        if (useclto) obj.put("clientToken",re[1]);
+        if (re[1]!=null) obj.put("clientToken",re[1]);
         CloseableHttpResponse resp = post(server + "/authenticate",obj.toJSONString());
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 200){
             ProfileUtils.write("auth",parser.parse(body));
-            return true;
+            return;
         } else {
+            System.out.print(body);
             throw new InvalidCredentialsException("An issue occcured, please don't come again.");
         }
     }
@@ -66,11 +65,10 @@ public class LoginUtils {
         LoginUtils.password = password;
     }
 
-    // returns false if invalid
+    // returns true if invalid
     public static boolean refresh() throws Exception {
         String[] re = (String[]) ProfileUtils.read("tokens");
-        if (!validate(re)) return false;
-        HttpPost post = new HttpPost(server + "/refresh");
+        if (!validate(re)) return true;
         JSONObject obj = new JSONObject();
         obj.put("accessToken",re[0]);
         obj.put("clientToken",re[1]);
@@ -78,23 +76,23 @@ public class LoginUtils {
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 200){
             ProfileUtils.write("auth",parser.parse(body));
-            return true;
-        }
-        return false;
+            return false;
+        }else return true;
     }
 
+    // if the api returns 204 then validation was successful
     private static boolean validate(String[] re) throws Exception {
         if (re[0].equals("it's cold outside")) return false;
-        HttpPost post = new HttpPost(server + "/validate");
         JSONObject obj = new JSONObject();
         obj.put("accessToken",re[0]);
         obj.put("clientToken",re[1]);
-        CloseableHttpResponse resp = post("","");
+        CloseableHttpResponse resp = post(server + "/validate", obj.toJSONString());
         String body = EntityUtils.toString(resp.getEntity());
         if (resp.getStatusLine().getStatusCode() == 204)return true;
         return false;
     }
 
+    // signs out of your minecraft account because why not
     public static void signOutOrInvalidate() throws Exception {
         HttpPost post;
         JSONObject obj;
