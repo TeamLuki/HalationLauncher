@@ -21,4 +21,4 @@ deploy:
   file: "$JAR"
   prerelease: true
   on:
-    repo: DreamLiveGitHub/HalationLauncher
+    repo: TeamLuki/HalationLauncher
